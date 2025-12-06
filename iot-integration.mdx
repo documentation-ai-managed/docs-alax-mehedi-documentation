@@ -1,0 +1,174 @@
+---
+title: IoT Integration
+description: Technical guide for integrating IoT devices with PCREPBD platform
+---
+
+## IoT Device Integration Overview
+
+PCREPBD's IoT integration capabilities allow seamless connectivity between smart sensors, GPS trackers, and waste management devices with our cloud platform. Our robust API and device management system ensures reliable data collection and real-time monitoring for plastic waste management operations.
+
+Whether you're integrating existing IoT devices or deploying new smart sensors, our platform provides the tools and documentation needed for successful implementation.
+
+<Steps>
+  <Step title="Device Registration" icon="plus-circle">
+    Register your IoT devices in the PCREPBD platform with unique identifiers and specifications.
+  </Step>
+  <Step title="API Authentication" icon="key">
+    Obtain API credentials and configure authentication for secure device communication.
+  </Step>
+  <Step title="Data Configuration" icon="settings">
+    Set up data schemas and transmission protocols for your specific device types.
+  </Step>
+  <Step title="Testing & Deployment" icon="check-circle">
+    Test device connectivity and deploy to production environment with monitoring.
+  </Step>
+</Steps>
+
+## Supported Device Types
+
+<Tabs>
+  <Tab title="Smart Bins" icon="trash-2">
+    Fill-level sensors and weight measurement devices for waste collection monitoring.
+
+    <ParamField path="device_type" param-type="string" required="true">
+      Type of IoT device being registered (e.g., smart_bin, gps_tracker).
+    </ParamField>
+  </Tab>
+  <Tab title="GPS Trackers" icon="navigation">
+    Vehicle tracking devices with real-time location and route data.
+
+    <ParamField query="firmware_version" param-type="string" required="false">
+      Current firmware version of the IoT device.
+    </ParamField>
+  </Tab>
+  <Tab title="Weight Sensors" icon="scale">
+    Precision weighing devices for accurate waste quantity measurement.
+
+    <ParamField header="Device-ID" param-type="string" required="true">
+      Unique device identifier in HTTP headers.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## API Authentication
+
+<ExpandableGroup>
+  <Expandable title="API Key Management" default-open="true">
+    Secure API key generation and management for device authentication.
+
+    <Callout kind="alert">Keep API keys secure and rotate them regularly for security.</Callout>
+  </Expandable>
+  <Expandable title="OAuth Integration" default-open="false">
+    OAuth 2.0 support for enterprise device integrations and third-party applications.
+  </Expandable>
+  <Expandable title="Certificate-based Auth" default-open="false">
+    X.509 certificate authentication for high-security IoT device connections.
+  </Expandable>
+</ExpandableGroup>
+
+## Data Transmission Protocols
+
+<CodeGroup tabs="MQTT,HTTP,WebSocket">
+  ````javascript
+// MQTT Protocol Example
+const mqtt = require('mqtt');
+const client = mqtt.connect('mqtt://api.pcrepbd.com');
+
+client.on('connect', () => {
+  client.subscribe('devices/BIN001/data');
+  
+  setInterval(() => {
+    const sensorData = {
+      deviceId: 'BIN001',
+      fillLevel: Math.random() * 100,
+      timestamp: new Date().toISOString()
+    };
+    client.publish('devices/BIN001/data', JSON.stringify(sensorData));
+  }, 300000); // 5 minutes
+});
+````
+  ````javascript
+// HTTP REST API Example
+const sendSensorData = async (deviceData) => {
+  const response = await fetch('/api/devices/data', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'Device-ID': deviceData.deviceId
+    },
+    body: JSON.stringify({
+      fillLevel: deviceData.fillLevel,
+      weight: deviceData.weight,
+      location: deviceData.location,
+      timestamp: deviceData.timestamp
+    })
+  });
+  
+  return response.json();
+};
+````
+  ````javascript
+// WebSocket Real-time Connection
+const ws = new WebSocket('wss://api.pcrepbd.com/devices');
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'authenticate',
+    apiKey: apiKey,
+    deviceId: 'BIN001'
+  }));
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log('Received:', data);
+};
+
+// Send periodic updates
+setInterval(() => {
+  ws.send(JSON.stringify({
+    type: 'sensor_update',
+    fillLevel: Math.random() * 100,
+    timestamp: new Date().toISOString()
+  }));
+}, 300000);
+````
+</CodeGroup>
+
+## Device Management Dashboard
+
+<Callout kind="info">Monitor all connected devices from a centralized dashboard with real-time status updates.</Callout>
+
+Dashboard features include:
+- Device connectivity status
+- Battery level monitoring
+- Data transmission logs
+- Firmware update management
+- Alert configuration
+
+## Troubleshooting Integration
+
+<Tabs>
+  <Tab title="Connectivity Issues" icon="wifi-off">
+    Check network connectivity, firewall settings, and device configuration.
+  </Tab>
+  <Tab title="Data Format Errors" icon="alert-triangle">
+    Verify data schemas match API specifications and all required fields are included.
+  </Tab>
+  <Tab title="Authentication Problems" icon="lock">
+    Confirm API keys are valid, not expired, and properly formatted in requests.
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<Expandable title="Integration Guidelines" default-open="false">
+  Follow these best practices for reliable IoT device integration.
+
+  - Implement exponential backoff for failed transmissions
+  - Use data compression for bandwidth-constrained devices
+  - Validate data before transmission to reduce errors
+  - Monitor device health metrics regularly
+  - Keep firmware updated for security and performance
+</Expandable>

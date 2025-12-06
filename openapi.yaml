@@ -1,0 +1,214 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: PCREPBD API
+  license:
+    name: MIT
+servers:
+  - url: https://api.pcrepbd.com/v1
+paths:
+  /collections:
+    get:
+      summary: Retrieve a list of waste collections with filtering and pagination support. This endpoint allows users to fetch collection records based on various criteria such as date ranges, producer IDs, and collection status. It supports sorting by collection date and provides detailed information about each collection including weights, locations, and verification status.
+      operationId: listCollections
+      parameters:
+        - name: limit
+          in: query
+          description: Number of collections to return per page, maximum 100
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Successful response with paginated collection data
+          headers:
+            x-next:
+              description: Link to the next page of results
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collections'
+        default:
+          description: Unexpected error occurred during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new waste collection record in the system. This endpoint allows authorized users to submit collection data including waste quantities, collection locations, and associated producer information. The system validates the data and assigns a unique collection ID for tracking and compliance reporting.
+      operationId: createCollection
+      responses:
+        201:
+          description: Collection record created successfully
+        default:
+          description: Unexpected error occurred during collection creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /collections/{collectionId}:
+    get:
+      summary: Retrieve detailed information about a specific waste collection. This endpoint provides comprehensive data about a single collection including all associated metadata, verification status, and compliance information. It is essential for detailed reporting and audit purposes.
+      operationId: getCollection
+      parameters:
+        - name: collectionId
+          in: path
+          required: true
+          description: Unique identifier of the collection to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Detailed collection information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collections'
+        default:
+          description: Unexpected error occurred while retrieving collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /certifications:
+    get:
+      summary: List all OBP certifications with status and validity information. This endpoint provides an overview of certification records including expiry dates, compliance status, and renewal requirements. It supports filtering by certification type and status for efficient management.
+      operationId: listCertifications
+      parameters:
+        - name: limit
+          in: query
+          description: Number of certifications to return per page, maximum 100
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Successful response with certification list
+          headers:
+            x-next:
+              description: Link to the next page of certifications
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certifications'
+        default:
+          description: Unexpected error occurred during certification retrieval
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Submit a new OBP certification application. This endpoint processes certification requests with all required documentation and producer information. The system initiates the verification process and provides a tracking number for application status monitoring.
+      operationId: createCertification
+      responses:
+        201:
+          description: Certification application submitted successfully
+        default:
+          description: Unexpected error occurred during certification creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      summary: Retrieve user accounts and profiles in the system. This endpoint provides access to user information for administrative purposes, including roles, permissions, and associated organizations. It supports pagination and filtering for large user bases.
+      operationId: listUsers
+      parameters:
+        - name: limit
+          in: query
+          description: Number of users to return per page, maximum 100
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Successful response with user list
+          headers:
+            x-next:
+              description: Link to the next page of users
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          description: Unexpected error occurred during user retrieval
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Collection:
+      required:
+        - id
+        - producer_id
+      properties:
+        id:
+          type: string
+        producer_id:
+          type: string
+        weight_kg:
+          type: number
+        collection_date:
+          type: string
+        status:
+          type: string
+    Collections:
+      type: array
+      items:
+        $ref: '#/components/schemas/Collection'
+    Certification:
+      required:
+        - id
+        - producer_id
+      properties:
+        id:
+          type: string
+        producer_id:
+          type: string
+        type:
+          type: string
+        expiry_date:
+          type: string
+        status:
+          type: string
+    Certifications:
+      type: array
+      items:
+        $ref: '#/components/schemas/Certification'
+    User:
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        organization:
+          type: string
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

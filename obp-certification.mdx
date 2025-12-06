@@ -1,0 +1,152 @@
+---
+title: OBP Certification
+description: Understanding Obligation Based Plastic certification process in PCREPBD
+---
+
+## Introduction to OBP Certification
+
+Obligation Based Plastic (OBP) certification is a regulatory requirement in Bangladesh that mandates plastic producers and importers to manage their plastic waste obligations. PCREPBD provides a streamlined platform for obtaining and maintaining OBP certification through automated compliance tracking and verification.
+
+Our certification process ensures that businesses meet their plastic waste management responsibilities while maintaining transparency and accountability throughout the supply chain.
+
+<Steps>
+  <Step title="Eligibility Assessment" icon="search">
+    Evaluate your eligibility for OBP certification based on your plastic production or import volume.
+  </Step>
+  <Step title="Application Submission" icon="file-text">
+    Submit detailed application with production data, waste management plans, and compliance history.
+  </Step>
+  <Step title="Document Verification" icon="check-circle">
+    Our team verifies all submitted documents and conducts initial compliance review.
+  </Step>
+  <Step title="Certification Issuance" icon="award">
+    Receive your OBP certificate with unique tracking number and compliance dashboard access.
+  </Step>
+</Steps>
+
+## Certification Types
+
+<Tabs>
+  <Tab title="Standard OBP" icon="certificate">
+    Basic certification for businesses with annual plastic obligations under 100 metric tons.
+
+    <ParamField body="certification_type" param-type="string" required="true">
+      Type of OBP certification being applied for.
+    </ParamField>
+  </Tab>
+  <Tab title="Premium OBP" icon="star">
+    Enhanced certification with priority support and advanced compliance features for larger producers.
+
+    <ParamField header="X-API-Key" param-type="string" required="true">
+      API key for accessing premium certification features.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## Application Process
+
+<ExpandableGroup>
+  <Expandable title="Required Documents" default-open="true">
+    Prepare and submit necessary documentation for OBP certification application.
+
+    <Callout kind="info">All documents must be submitted in PDF format with clear signatures.</Callout>
+  </Expandable>
+  <Expandable title="Fee Structure" default-open="false">
+    Understanding certification fees and payment options.
+  </Expandable>
+  <Expandable title="Processing Timeline" default-open="false">
+    Expected processing time for OBP certification applications.
+  </Expandable>
+</ExpandableGroup>
+
+## Compliance Monitoring
+
+<CodeGroup tabs="JavaScript,Python">
+  ````javascript
+// Monitor OBP compliance
+const complianceData = {
+  producerId: 'PROD123',
+  period: '2024-Q1',
+  wasteCollected: 25000,
+  targetObligation: 30000
+};
+
+const monitor = await fetch('/api/certification/obp/monitor', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(complianceData)
+});
+
+const result = await monitor.json();
+console.log(`Compliance Status: ${result.status}`);
+````
+  ````python
+import requests
+
+# Check OBP certification status
+data = {
+    "producer_id": "PROD123",
+    "period": "2024-Q1",
+    "waste_collected": 25000,
+    "target_obligation": 30000
+}
+
+response = requests.post('/api/certification/obp/monitor', 
+                        json=data, 
+                        headers={'Authorization': f'Bearer {api_key}'})
+result = response.json()
+print(f"Compliance Status: {result['status']}")
+````
+</CodeGroup>
+
+## Renewal Requirements
+
+<Callout kind="alert">OBP certifications must be renewed annually with updated compliance data.</Callout>
+
+Renewal involves:
+- Submitting annual waste management reports
+- Demonstrating continued compliance with EPR obligations
+- Paying renewal fees
+- Updating contact and operational information
+
+## Benefits of Certification
+
+<Columns cols={3}>
+  <Card title="Market Access" icon="globe" href="#">
+    Certified businesses gain preferential access to markets and government contracts.
+  </Card>
+  <Card title="Regulatory Compliance" icon="shield" href="#">
+    Automatic compliance with Bangladesh's plastic waste management regulations.
+  </Card>
+  <Card title="Reputation" icon="star" href="#">
+    Enhanced brand reputation through demonstrated environmental responsibility.
+  </Card>
+</Columns>
+
+## Common Challenges
+
+<Tabs>
+  <Tab title="Documentation" icon="file-text">
+    Ensure all required documents are complete and accurately represent your operations.
+  </Tab>
+  <Tab title="Data Accuracy" icon="database">
+    Maintain accurate records of plastic production and waste collection activities.
+  </Tab>
+  <Tab title="Timeline Management" icon="clock">
+    Plan ahead to meet certification deadlines and renewal requirements.
+  </Tab>
+</Tabs>
+
+## Support Services
+
+<Expandable title="Certification Support" default-open="false">
+  Our expert team provides comprehensive support throughout the OBP certification process.
+
+  - Application assistance and document review
+  - Compliance consultation and best practices
+  - Renewal reminders and deadline management
+  - Regulatory updates and policy guidance
+</Expandable>
